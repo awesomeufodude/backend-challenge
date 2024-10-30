@@ -166,7 +166,7 @@ This setup will get your application running on your local machine for developme
   ```
   **Example for your setup**:
   ```plaintext
-  DATABASE_URL="postgres://u66mrllk22toel:p148248cab66a5dafd924ff856774f91dd49b6dd736e37263de4aac5234869365@c5p86clmevrg5s.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d1dikbd6rvei34"
+  DATABASE_URL=""
   ```
 
 ### Authentication Key
