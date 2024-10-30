@@ -1,0 +1,72 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  email     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model Survivor {
+  id              Int         @id @default(autoincrement())
+  name            String
+  age             Int
+  gender          String?
+  lastLatitude    Float
+  lastLongitude   Float
+  infected        Boolean     @default(false)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  Inventory       Inventory[]
+  TradeAsSender   Trade[]     @relation("TradeAsSender")
+  TradeAsReceiver Trade[]     @relation("TradeAsReceiver")
+}
+
+model Item {
+  id            Int         @id @default(autoincrement())
+  name          String      @unique
+  description   String?
+  Inventory     Inventory[]
+  TradesAsItem1 Trade[]     @relation("TradesAsItem1")
+  TradesAsItem2 Trade[]     @relation("TradesAsItem2")
+}
+
+model Inventory {
+  id         Int      @id @default(autoincrement())
+  survivorId Int
+  itemId     Int
+  quantity   Int
+  Survivor   Survivor @relation(fields: [survivorId], references: [id])
+  Item       Item     @relation(fields: [itemId], references: [id])
+}
+
+model Trade {
+  id          Int      @id @default(autoincrement())
+  survivorId1 Int
+  survivorId2 Int
+  itemId1     Int
+  itemId2     Int
+  quantity1   Int
+  quantity2   Int
+  tradeDate   DateTime @default(now())
+  Survivor1   Survivor @relation("TradeAsSender", fields: [survivorId1], references: [id])
+  Survivor2   Survivor @relation("TradeAsReceiver", fields: [survivorId2], references: [id])
+  Item1       Item     @relation("TradesAsItem1", fields: [itemId1], references: [id])
+  Item2       Item     @relation("TradesAsItem2", fields: [itemId2], references: [id])
+}
